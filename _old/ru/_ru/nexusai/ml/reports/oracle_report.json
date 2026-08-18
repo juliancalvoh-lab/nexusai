@@ -1,0 +1,8 @@
+{
+  "modelId": "0xc89556c53b8c0a16adead7c1e87adb83174ff91253ff823ecf06b3b51e08fa47",
+  "accuracyBps": 9742,
+  "latencyMs": 15,
+  "driftBps": 514,
+  "generatedAt": "2026-08-18T04:24:04.701275Z",
+  "evaluationCommit": "59a6738fac6dc149ea52325fb422df399f93e778f04da77e7cf2714a6d9c9c7a"
+}

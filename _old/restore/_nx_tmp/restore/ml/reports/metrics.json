@@ -1,0 +1,677 @@
+{
+  "generated_at": "2026-08-17T02:46:06.676289+00:00",
+  "seed": 6850,
+  "dataset": {
+    "provenance": "synthetic",
+    "seed": 6850,
+    "label_noise": 0.015,
+    "corpus": {
+      "n": 8000,
+      "phishing": 3356,
+      "benign": 4644,
+      "groups": 1574,
+      "templates": 114
+    },
+    "holdout": {
+      "n": 1200,
+      "phishing": 481,
+      "benign": 719,
+      "groups": 805,
+      "unseen_template_records": 300
+    },
+    "group_overlap_corpus_holdout": 0,
+    "evaluationCommit": "59a6738fac6dc149ea52325fb422df399f93e778f04da77e7cf2714a6d9c9c7a",
+    "sources_documented": [
+      "https://monkey.org/~jose/phishing/",
+      "https://spamassassin.apache.org/old/publiccorpus/",
+      "https://phishtank.org/developer_info.php",
+      "https://archive.ics.uci.edu/dataset/327/phishing+websites"
+    ]
+  },
+  "split": {
+    "strategy": "StratifiedGroupKFold on group_id (near-duplicate template clusters)",
+    "train": 4797,
+    "val": 1603,
+    "test": 1600,
+    "phishing_rate": {
+      "train": 0.4194288096727121,
+      "val": 0.4185901434809732,
+      "test": 0.420625
+    },
+    "groups": {
+      "train": 944,
+      "val": 332,
+      "test": 298
+    },
+    "group_overlap": 0
+  },
+  "leakage_check": {
+    "note": "Identical fixed pipeline (combined families + LogReg C=2.0) and identical 80/20 sizes; the ONLY difference is whether the split respects group_id. `inflation` > 0 means a random split would have over-reported F1 by that much.",
+    "random_split_test_f1": 0.9410852713178295,
+    "grouped_split_test_f1": 0.9358081979891725,
+    "inflation": 0.0052770733286570115
+  },
+  "models": {
+    "M1_baseline_word_tfidf_logreg": {
+      "description": "BASELINE. Word 1-2gram TF-IDF on subject+body -> LogisticRegression. No char n-grams, no URL features, no header features.",
+      "fit_seconds": 0.74,
+      "best_params": {},
+      "cv_best_f1": null,
+      "val_at_0.5": {
+        "threshold": 0.5,
+        "accuracy": 0.801621958827199,
+        "precision": 0.7898193760262726,
+        "recall": 0.7168405365126677,
+        "f1": 0.7515625,
+        "roc_auc": 0.8646053868737327,
+        "pr_auc": 0.827259907404202,
+        "tp": 481,
+        "fp": 128,
+        "fn": 190,
+        "tn": 804,
+        "expected_cost": 888.0
+      }
+    },
+    "M2_word_char_tfidf_logreg": {
+      "description": "IMPROVEMENT 1: add char_wb 3-5gram TF-IDF. Character n-grams match across deliberate misspellings ('acount', 'ver1fy') and homoglyph domains that word tokenisation shatters into unseen tokens.",
+      "fit_seconds": 4.54,
+      "best_params": {},
+      "cv_best_f1": null,
+      "val_at_0.5": {
+        "threshold": 0.5,
+        "accuracy": 0.8247036805988771,
+        "precision": 0.8125,
+        "recall": 0.7555886736214605,
+        "f1": 0.783011583011583,
+        "roc_auc": 0.885757597078219,
+        "pr_auc": 0.8564399928079349,
+        "tp": 507,
+        "fp": 117,
+        "fn": 164,
+        "tn": 815,
+        "expected_cost": 773.0
+      }
+    },
+    "M3_dense_histgb": {
+      "description": "IMPROVEMENT 2: drop text entirely; use only the engineered URL and header/auth families with HistGradientBoosting. Tests how much signal lives outside the words, and captures non-linear interactions (e.g. 'SPF fails AND reply-to mismatches') a linear model cannot.",
+      "fit_seconds": 1.48,
+      "best_params": {},
+      "cv_best_f1": null,
+      "val_at_0.5": {
+        "threshold": 0.5,
+        "accuracy": 0.975670617592015,
+        "precision": 0.9861538461538462,
+        "recall": 0.9552906110283159,
+        "f1": 0.9704769114307343,
+        "roc_auc": 0.9801510141163978,
+        "pr_auc": 0.9690432953800714,
+        "tp": 641,
+        "fp": 9,
+        "fn": 30,
+        "tn": 923,
+        "expected_cost": 129.0
+      }
+    },
+    "M4_combined_linearsvc_cal": {
+      "description": "IMPROVEMENT 3: all three families together, calibrated LinearSVC. A max-margin loss handles the very high-dimensional sparse text block well; CalibratedClassifierCV (sigmoid, 3-fold) turns margins into probabilities so a cost-sensitive threshold is meaningful.",
+      "fit_seconds": 12.37,
+      "best_params": {},
+      "cv_best_f1": null,
+      "val_at_0.5": {
+        "threshold": 0.5,
+        "accuracy": 0.9482220835932627,
+        "precision": 0.9711538461538461,
+        "recall": 0.9031296572280179,
+        "f1": 0.9359073359073359,
+        "roc_auc": 0.9711403772474624,
+        "pr_auc": 0.9600295969297371,
+        "tp": 606,
+        "fp": 18,
+        "fn": 65,
+        "tn": 914,
+        "expected_cost": 278.0
+      }
+    },
+    "M5_combined_logreg_tuned": {
+      "description": "IMPROVEMENT 4: all three families, LogisticRegression tuned by GridSearchCV over regularisation strength, class weighting and text min_df, with a GROUPED 3-fold CV so tuning cannot exploit near-duplicate leakage either.",
+      "fit_seconds": 42.85,
+      "best_params": {
+        "clf__C": "0.5",
+        "clf__class_weight": "balanced",
+        "prep__text__word__min_df": "2"
+      },
+      "cv_best_f1": 0.9435072189752846,
+      "val_at_0.5": {
+        "threshold": 0.5,
+        "accuracy": 0.9563318777292577,
+        "precision": 0.9747235387045814,
+        "recall": 0.9195230998509687,
+        "f1": 0.946319018404908,
+        "roc_auc": 0.9741258003236474,
+        "pr_auc": 0.9611246061448706,
+        "tp": 617,
+        "fp": 16,
+        "fn": 54,
+        "tn": 916,
+        "expected_cost": 232.0
+      }
+    },
+    "M6_softvote_M3_M5": {
+      "description": "IMPROVEMENT 5: unweighted soft vote over M3 (dense trees) and M5 (tuned linear on all families). The two make different mistakes: M3 cannot read the text, M5 cannot model feature interactions, so averaging their probabilities trims both error modes.",
+      "fit_seconds": 0.0,
+      "best_params": {
+        "members": [
+          "M3_dense_histgb",
+          "M5_combined_logreg_tuned"
+        ]
+      },
+      "cv_best_f1": null,
+      "val_at_0.5": {
+        "threshold": 0.5,
+        "accuracy": 0.9737991266375546,
+        "precision": 0.9845916795069337,
+        "recall": 0.9523099850968704,
+        "f1": 0.9681818181818181,
+        "roc_auc": 0.979658507256481,
+        "pr_auc": 0.9752702902270123,
+        "tp": 639,
+        "fp": 10,
+        "fn": 32,
+        "tn": 922,
+        "expected_cost": 138.0
+      }
+    }
+  },
+  "selected_model": "M6_softvote_M3_M5",
+  "selection_criterion": "validation PR-AUC",
+  "operating_point": {
+    "threshold": 0.2723232323232323,
+    "precision_floor_satisfied": true,
+    "val_at_threshold": {
+      "precision": 0.9715142428785607,
+      "recall": 0.9657228017883756,
+      "f1": 0.968609865470852,
+      "cost": 111.0,
+      "tp": 648.0,
+      "fp": 19.0,
+      "fn": 23.0,
+      "tn": 913.0
+    },
+    "f1_optimal_threshold": 0.38616161616161615,
+    "val_at_f1_optimal": {
+      "precision": 0.9831288343558282,
+      "recall": 0.9552906110283159,
+      "f1": 0.9690098261526833,
+      "cost": 131.0
+    },
+    "default_0.5": {
+      "precision": 0.9845916795069337,
+      "recall": 0.9523099850968704,
+      "f1": 0.9681818181818181,
+      "cost": 138.0
+    },
+    "cost_model": {
+      "cost_fn": 4.0,
+      "cost_fp": 1.0,
+      "min_precision": 0.9
+    }
+  },
+  "threshold_sweep_val": [
+    {
+      "threshold": 0.01,
+      "precision": 0.4562,
+      "recall": 0.994,
+      "f1": 0.6254,
+      "cost": 811.0
+    },
+    {
+      "threshold": 0.0595,
+      "precision": 0.7183,
+      "recall": 0.9806,
+      "f1": 0.8292,
+      "cost": 310.0
+    },
+    {
+      "threshold": 0.109,
+      "precision": 0.8495,
+      "recall": 0.9762,
+      "f1": 0.9085,
+      "cost": 180.0
+    },
+    {
+      "threshold": 0.1585,
+      "precision": 0.9105,
+      "recall": 0.9702,
+      "f1": 0.9394,
+      "cost": 144.0
+    },
+    {
+      "threshold": 0.208,
+      "precision": 0.9352,
+      "recall": 0.9672,
+      "f1": 0.9509,
+      "cost": 133.0
+    },
+    {
+      "threshold": 0.2575,
+      "precision": 0.9686,
+      "recall": 0.9657,
+      "f1": 0.9672,
+      "cost": 113.0
+    },
+    {
+      "threshold": 0.307,
+      "precision": 0.9728,
+      "recall": 0.9598,
+      "f1": 0.9662,
+      "cost": 126.0
+    },
+    {
+      "threshold": 0.3565,
+      "precision": 0.9801,
+      "recall": 0.9553,
+      "f1": 0.9675,
+      "cost": 133.0
+    },
+    {
+      "threshold": 0.406,
+      "precision": 0.9831,
+      "recall": 0.9553,
+      "f1": 0.969,
+      "cost": 131.0
+    },
+    {
+      "threshold": 0.4555,
+      "precision": 0.9831,
+      "recall": 0.9523,
+      "f1": 0.9674,
+      "cost": 139.0
+    },
+    {
+      "threshold": 0.5049,
+      "precision": 0.9846,
+      "recall": 0.9523,
+      "f1": 0.9682,
+      "cost": 138.0
+    },
+    {
+      "threshold": 0.5544,
+      "precision": 0.986,
+      "recall": 0.9478,
+      "f1": 0.9666,
+      "cost": 149.0
+    },
+    {
+      "threshold": 0.6039,
+      "precision": 0.9859,
+      "recall": 0.9359,
+      "f1": 0.9602,
+      "cost": 181.0
+    },
+    {
+      "threshold": 0.6534,
+      "precision": 0.9857,
+      "recall": 0.924,
+      "f1": 0.9538,
+      "cost": 213.0
+    },
+    {
+      "threshold": 0.7029,
+      "precision": 0.9855,
+      "recall": 0.9121,
+      "f1": 0.9474,
+      "cost": 245.0
+    },
+    {
+      "threshold": 0.7524,
+      "precision": 0.9854,
+      "recall": 0.9061,
+      "f1": 0.9441,
+      "cost": 261.0
+    },
+    {
+      "threshold": 0.8019,
+      "precision": 0.9852,
+      "recall": 0.8957,
+      "f1": 0.9383,
+      "cost": 289.0
+    },
+    {
+      "threshold": 0.8514,
+      "precision": 0.9848,
+      "recall": 0.8703,
+      "f1": 0.9241,
+      "cost": 357.0
+    },
+    {
+      "threshold": 0.9009,
+      "precision": 0.9842,
+      "recall": 0.8331,
+      "f1": 0.9023,
+      "cost": 457.0
+    },
+    {
+      "threshold": 0.9504,
+      "precision": 0.9845,
+      "recall": 0.7571,
+      "f1": 0.8559,
+      "cost": 660.0
+    }
+  ],
+  "test_at_tuned_threshold": {
+    "threshold": 0.2723232323232323,
+    "accuracy": 0.96625,
+    "precision": 0.9571639586410635,
+    "recall": 0.962852897473997,
+    "f1": 0.96,
+    "roc_auc": 0.9813342822474517,
+    "pr_auc": 0.9740355112387217,
+    "tp": 648,
+    "fp": 29,
+    "fn": 25,
+    "tn": 898,
+    "expected_cost": 129.0
+  },
+  "test_at_0.5": {
+    "threshold": 0.5,
+    "accuracy": 0.971875,
+    "precision": 0.9815950920245399,
+    "recall": 0.950965824665676,
+    "f1": 0.9660377358490566,
+    "roc_auc": 0.9813342822474517,
+    "pr_auc": 0.9740355112387217,
+    "tp": 640,
+    "fp": 12,
+    "fn": 33,
+    "tn": 915,
+    "expected_cost": 144.0
+  },
+  "feature_importance": {
+    "top_dense_phishing": [
+      [
+        "sender_domain_digits",
+        1.9052427102387361
+      ],
+      [
+        "sender_is_freemail",
+        1.338410078490778
+      ],
+      [
+        "sender_domain_risky_tld",
+        1.3190717554516296
+      ],
+      [
+        "display_brand_mismatch",
+        1.2964510994638259
+      ],
+      [
+        "reply_to_freemail",
+        1.0979383485423335
+      ],
+      [
+        "any_risky_tld",
+        1.0504893130954587
+      ],
+      [
+        "url_max_entropy",
+        0.6891588622938193
+      ],
+      [
+        "reply_to_domain_mismatch",
+        0.6208302976514604
+      ],
+      [
+        "received_hops",
+        0.6125630164590605
+      ],
+      [
+        "sender_domain_hyphens",
+        0.5639338877755908
+      ]
+    ],
+    "top_dense_benign": [
+      [
+        "display_has_brand",
+        -1.044999619075178
+      ],
+      [
+        "brand_lookalike_min_dist",
+        -0.8941327371672027
+      ],
+      [
+        "https_ratio",
+        -0.8119630616590093
+      ],
+      [
+        "any_brand_lookalike",
+        -0.7003898298540041
+      ],
+      [
+        "reply_to_present",
+        -0.6623357144085673
+      ],
+      [
+        "sender_domain_len",
+        -0.6229278271790224
+      ],
+      [
+        "n_urls",
+        -0.48054113169643214
+      ],
+      [
+        "url_max_len",
+        -0.4668572564800036
+      ],
+      [
+        "sender_domain_depth",
+        -0.43502387756228755
+      ],
+      [
+        "sender_domain_brand_dist",
+        -0.2675583684787555
+      ]
+    ],
+    "top_text_phishing": [
+      [
+        "word__sensitive",
+        0.47079671047062915
+      ],
+      [
+        "word__is time",
+        0.47079671047062915
+      ],
+      [
+        "word__time sensitive",
+        0.47079671047062915
+      ],
+      [
+        "word__respond",
+        0.3717642527927972
+      ],
+      [
+        "word__this is",
+        0.35767869396348606
+      ],
+      [
+        "word__time",
+        0.3339772609500097
+      ],
+      [
+        "char__ive.",
+        0.31814604337899816
+      ],
+      [
+        "char__ve.",
+        0.31713710404533885
+      ],
+      [
+        "word__dropbox",
+        0.31213535762732647
+      ],
+      [
+        "word__35",
+        0.30264111930232296
+      ],
+      [
+        "word__info",
+        0.2939111000166357
+      ],
+      [
+        "word__kind",
+        0.2935766135685296
+      ],
+      [
+        "word__kind regards",
+        0.2935766135685296
+      ],
+      [
+        "word__last",
+        0.28582184155689716
+      ]
+    ],
+    "top_text_benign": [
+      [
+        "word__for microsoft",
+        -0.32054300905995015
+      ],
+      [
+        "word__september",
+        -0.31278020362793285
+      ],
+      [
+        "word__expires",
+        -0.30728098490692846
+      ],
+      [
+        "word__microsoft",
+        -0.30482179994616804
+      ],
+      [
+        "word__29",
+        -0.2895120565783127
+      ],
+      [
+        "word__25",
+        -0.2863561076504478
+      ],
+      [
+        "word__email utm_campaign",
+        -0.2649326845056938
+      ],
+      [
+        "word__utm_source email",
+        -0.2649326845056938
+      ],
+      [
+        "word__utm_campaign",
+        -0.2649326845056938
+      ],
+      [
+        "word__utm_source",
+        -0.2649326845056938
+      ],
+      [
+        "word__11",
+        -0.26337422272776106
+      ],
+      [
+        "word__netflix",
+        -0.25905463271778995
+      ],
+      [
+        "word__october",
+        -0.2530080558841855
+      ],
+      [
+        "word__shared file",
+        -0.24244456344557277
+      ]
+    ],
+    "hgb_permutation_top": [
+      [
+        "header__sender_is_freemail",
+        0.10436052885201974
+      ],
+      [
+        "header__sender_domain_digits",
+        0.10145260966220263
+      ],
+      [
+        "header__reply_to_freemail",
+        0.09513561138063911
+      ],
+      [
+        "header__received_hops",
+        0.09282139816406554
+      ],
+      [
+        "url__brand_lookalike_min_dist",
+        0.0859772348827681
+      ],
+      [
+        "header__sender_domain_brand_dist",
+        0.05935060945430866
+      ],
+      [
+        "header__sender_domain_depth",
+        0.028971480214726043
+      ],
+      [
+        "header__sender_domain_len",
+        0.027991153438948736
+      ],
+      [
+        "header__sender_domain_risky_tld",
+        0.006643110301536659
+      ],
+      [
+        "header__sender_is_role_account",
+        0.004595622542529121
+      ],
+      [
+        "url__https_ratio",
+        0.0026952339136516513
+      ],
+      [
+        "url__any_risky_tld",
+        0.0026167372333516957
+      ],
+      [
+        "url__body_len",
+        0.0019732739456761903
+      ],
+      [
+        "url__url_mean_entropy",
+        0.0018742270278103712
+      ],
+      [
+        "url__url_max_entropy",
+        0.0015516466525506533
+      ],
+      [
+        "header__display_brand_mismatch",
+        0.0015229726387827158
+      ],
+      [
+        "url__subject_len",
+        0.0013484171765542952
+      ],
+      [
+        "header__spf_pass",
+        0.0012493270017631453
+      ]
+    ]
+  },
+  "error_analysis": {
+    "n_fp": 29,
+    "n_fn": 25,
+    "n_fp_genuine": 21,
+    "n_fn_genuine": 9,
+    "n_fp_shown": 6,
+    "n_fn_shown": 6,
+    "errors_on_noise_labels": 24,
+    "fn_all_auth_pass": 12,
+    "fn_no_url": 1
+  },
+  "runtime_seconds": 88.0
+}

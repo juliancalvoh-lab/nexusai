@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-08-18T00:48:21.817Z",
+  "workflow": "public-testnet model-listing transfer with operator-relayed demonstration adapter",
+  "productionTransport": false,
+  "source": {
+    "network": "sepolia",
+    "chainId": 11155111,
+    "contracts": {
+      "NexusTimelock": "0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464",
+      "NexusAIToken": "0xb6629599d3854F9E990C7FBbbCE65f2D1bEb2b2d",
+      "ComplianceRegistry": "0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7",
+      "AIPerformanceOracle": "0x54735bf9222f0AA40e0a105C854f9207AE3D4E91",
+      "StakingVault": "0xAB9690c47d9700FEfE9Cf26238e18214f0D237CC",
+      "AIModelMarketplace": "0x4D7Acd984DCF576c4866354d46A7A0B43190d213",
+      "SealedBidLicenceAuction": "0xd6CAD3265C42ED62c59581A48eb4bBc254943148",
+      "NexusGovernor": "0xe7965d820ab52F2cdc429b43D9b5fc11078B3Afe",
+      "MockCrossChainRouter": "0x3eaFaf72cA65995Be34550080DFcF47571cE5066",
+      "CrossChainRegistry": "0x3aeAa691aAB3209b34B6Ef740127b3f55C3fDa36"
+    }
+  },
+  "destination": {
+    "network": "hoodi",
+    "chainId": 560048,
+    "contracts": {
+      "NexusTimelock": "0xE2960dF7a0C5ca17952B2ddAEc30f9c7AB489dF7",
+      "NexusAIToken": "0xD68dB442306F48214bF79AdBc5803E73C825af41",
+      "ComplianceRegistry": "0x7ec6309159521d76c6A2839e4048864E3701d7CF",
+      "AIPerformanceOracle": "0x03C3A6E6B6Cea0CbA63b61B35fb2d0287e062715",
+      "StakingVault": "0xFE328A93e386524E3f8797d1c5EEB1D411bf35d9",
+      "AIModelMarketplace": "0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464",
+      "SealedBidLicenceAuction": "0xb6629599d3854F9E990C7FBbbCE65f2D1bEb2b2d",
+      "MockCrossChainRouter": "0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7",
+      "CrossChainRegistry": "0x54735bf9222f0AA40e0a105C854f9207AE3D4E91"
+    }
+  },
+  "deployer": "0x64892B4a1ab85b55DC30500CA41E1B726db193FA",
+  "transactions": [
+    {
+      "network": "sepolia",
+      "label": "trust destination registry",
+      "hash": "0x530f3d1bac294eb2cfc435ed4fdcc643d2c1a1ffd21a13ccbbadffe4d45d5486",
+      "blockNumber": 11511686,
+      "explorer": "https://sepolia.etherscan.io/tx/0x530f3d1bac294eb2cfc435ed4fdcc643d2c1a1ffd21a13ccbbadffe4d45d5486"
+    },
+    {
+      "network": "hoodi",
+      "label": "trust source registry",
+      "hash": "0x2479ab8d2b3e096546fca079224acf449057e6f701e4b27fd47e8ecaf83c53e1",
+      "blockNumber": 3440790,
+      "explorer": "https://hoodi.etherscan.io/tx/0x2479ab8d2b3e096546fca079224acf449057e6f701e4b27fd47e8ecaf83c53e1"
+    },
+    {
+      "network": "sepolia",
+      "label": "record destination router",
+      "hash": "0xdfe9fc939da512ab88a7acea8ca6272b7905ff58d217cbfe459700faccc1a566",
+      "blockNumber": 11511688,
+      "explorer": "https://sepolia.etherscan.io/tx/0xdfe9fc939da512ab88a7acea8ca6272b7905ff58d217cbfe459700faccc1a566"
+    },
+    {
+      "network": "hoodi",
+      "label": "record source router",
+      "hash": "0x79e6c1af35fa3c49a8d38327cc9eb673459fe17b75db074e2bbbfb9b450361d0",
+      "blockNumber": 3440792,
+      "explorer": "https://hoodi.etherscan.io/tx/0x79e6c1af35fa3c49a8d38327cc9eb673459fe17b75db074e2bbbfb9b450361d0"
+    },
+    {
+      "network": "sepolia",
+      "label": "mint demo provider bond",
+      "hash": "0x512455a5a5316471cdd626973641d0c82a922d574b1d233597a1b9f364d02aee",
+      "blockNumber": 11511690,
+      "explorer": "https://sepolia.etherscan.io/tx/0x512455a5a5316471cdd626973641d0c82a922d574b1d233597a1b9f364d02aee"
+    },
+    {
+      "network": "sepolia",
+      "label": "approve staking vault",
+      "hash": "0xced58bfa9a6ec2a9d14af408162026f8b13e0c6eaba8ff55dd9d45a07e15397a",
+      "blockNumber": 11511691,
+      "explorer": "https://sepolia.etherscan.io/tx/0xced58bfa9a6ec2a9d14af408162026f8b13e0c6eaba8ff55dd9d45a07e15397a"
+    },
+    {
+      "network": "sepolia",
+      "label": "stake provider bond",
+      "hash": "0x562669194ee4dcfe1018dab98cdb24024d35ef0cc40891aa2f6cf041c92a5a55",
+      "blockNumber": 11511692,
+      "explorer": "https://sepolia.etherscan.io/tx/0x562669194ee4dcfe1018dab98cdb24024d35ef0cc40891aa2f6cf041c92a5a55"
+    },
+    {
+      "network": "sepolia",
+      "label": "set demo oracle quorum",
+      "hash": "0xd48e976c3409c893e23fdd643da9ea0d8e713e40c01a11d5a583680649f7c81b",
+      "blockNumber": 11511693,
+      "explorer": "https://sepolia.etherscan.io/tx/0xd48e976c3409c893e23fdd643da9ea0d8e713e40c01a11d5a583680649f7c81b"
+    },
+    {
+      "network": "sepolia",
+      "label": "authorize demo reporter",
+      "hash": "0x75446fd24e0535c0e027d3dd5f273d1e4e28655d8d92f7ec1f057c29745d819a",
+      "blockNumber": 11511694,
+      "explorer": "https://sepolia.etherscan.io/tx/0x75446fd24e0535c0e027d3dd5f273d1e4e28655d8d92f7ec1f057c29745d819a"
+    },
+    {
+      "network": "sepolia",
+      "label": "register source model",
+      "hash": "0xee12b3f1062033bbd5c3aa2b60f1115db16b6eefa143383d6f77993756648ae6",
+      "blockNumber": 11511696,
+      "explorer": "https://sepolia.etherscan.io/tx/0xee12b3f1062033bbd5c3aa2b60f1115db16b6eefa143383d6f77993756648ae6"
+    },
+    {
+      "network": "sepolia",
+      "label": "publish oracle result",
+      "hash": "0x7775c27cbb9e2e6db093322d374db7542db34b9129c40e94aee2ed5d05734a55",
+      "blockNumber": 11511697,
+      "explorer": "https://sepolia.etherscan.io/tx/0x7775c27cbb9e2e6db093322d374db7542db34b9129c40e94aee2ed5d05734a55"
+    },
+    {
+      "network": "sepolia",
+      "label": "publish cross-chain model",
+      "hash": "0x08b8c5a94159c15669fe7cb5c7a1b5e0699f6abcfe03dc60b224c04a26972e07",
+      "blockNumber": 11511699,
+      "explorer": "https://sepolia.etherscan.io/tx/0x08b8c5a94159c15669fe7cb5c7a1b5e0699f6abcfe03dc60b224c04a26972e07"
+    },
+    {
+      "network": "hoodi",
+      "label": "relay model on destination",
+      "hash": "0x49a9355e8f3453b69b3285897d662130cdbd830e5ab3a7b8a3ee7d15d7896fb1",
+      "blockNumber": 3440801,
+      "explorer": "https://hoodi.etherscan.io/tx/0x49a9355e8f3453b69b3285897d662130cdbd830e5ab3a7b8a3ee7d15d7896fb1"
+    },
+    {
+      "network": "sepolia",
+      "label": "acknowledge source message",
+      "hash": "0x21094709d9c6334165e964928145770913d0209be82fc5680c6fcdf077999389",
+      "blockNumber": 11511701,
+      "explorer": "https://sepolia.etherscan.io/tx/0x21094709d9c6334165e964928145770913d0209be82fc5680c6fcdf077999389"
+    }
+  ],
+  "modelId": "0x600bab04baa2a86ee52bf6f9da89c004ab8f58d5af1197af25ab412bc7538963",
+  "messageId": "0x534ecfc1e6dc2c9ceb06a29d7599cb9a00488ec8f09ffdcb15def8a5624ba8ed",
+  "nonce": "1",
+  "destinationState": {
+    "active": true,
+    "provider": "0x64892B4a1ab85b55DC30500CA41E1B726db193FA",
+    "originChain": "11155111"
+  },
+  "contractExplorers": {
+    "sourceRegistry": "https://sepolia.etherscan.io/address/0x3aeAa691aAB3209b34B6Ef740127b3f55C3fDa36",
+    "destinationRegistry": "https://hoodi.etherscan.io/address/0x54735bf9222f0AA40e0a105C854f9207AE3D4E91"
+  }
+}

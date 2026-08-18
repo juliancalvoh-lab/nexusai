@@ -1,0 +1,75 @@
+# Deployed addresses
+
+Generated from the deployment records in the repository.
+
+## Ethereum Sepolia (hub)
+
+| Contract | Address |
+|---|---|
+| NexusTimelock | [`0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464`](https://sepolia.etherscan.io/address/0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464) |
+| NexusAIToken | [`0xb6629599d3854F9E990C7FBbbCE65f2D1bEb2b2d`](https://sepolia.etherscan.io/address/0xb6629599d3854F9E990C7FBbbCE65f2D1bEb2b2d) |
+| ComplianceRegistry | [`0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7`](https://sepolia.etherscan.io/address/0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7) |
+| AIPerformanceOracle | [`0x54735bf9222f0AA40e0a105C854f9207AE3D4E91`](https://sepolia.etherscan.io/address/0x54735bf9222f0AA40e0a105C854f9207AE3D4E91) |
+| StakingVault | [`0xAB9690c47d9700FEfE9Cf26238e18214f0D237CC`](https://sepolia.etherscan.io/address/0xAB9690c47d9700FEfE9Cf26238e18214f0D237CC) |
+| AIModelMarketplace | [`0x4D7Acd984DCF576c4866354d46A7A0B43190d213`](https://sepolia.etherscan.io/address/0x4D7Acd984DCF576c4866354d46A7A0B43190d213) |
+| SealedBidLicenceAuction | [`0xd6CAD3265C42ED62c59581A48eb4bBc254943148`](https://sepolia.etherscan.io/address/0xd6CAD3265C42ED62c59581A48eb4bBc254943148) |
+| NexusGovernor | [`0xe7965d820ab52F2cdc429b43D9b5fc11078B3Afe`](https://sepolia.etherscan.io/address/0xe7965d820ab52F2cdc429b43D9b5fc11078B3Afe) |
+| MockCrossChainRouter | [`0x3eaFaf72cA65995Be34550080DFcF47571cE5066`](https://sepolia.etherscan.io/address/0x3eaFaf72cA65995Be34550080DFcF47571cE5066) |
+| CrossChainRegistry | [`0x3aeAa691aAB3209b34B6Ef740127b3f55C3fDa36`](https://sepolia.etherscan.io/address/0x3aeAa691aAB3209b34B6Ef740127b3f55C3fDa36) |
+
+Deployed 2026-08-18T00:09:00.974Z.
+
+## Ethereum Hoodi (spoke)
+
+| Contract | Address |
+|---|---|
+| NexusTimelock | [`0xE2960dF7a0C5ca17952B2ddAEc30f9c7AB489dF7`](https://hoodi.etherscan.io/address/0xE2960dF7a0C5ca17952B2ddAEc30f9c7AB489dF7) |
+| NexusAIToken | [`0xD68dB442306F48214bF79AdBc5803E73C825af41`](https://hoodi.etherscan.io/address/0xD68dB442306F48214bF79AdBc5803E73C825af41) |
+| ComplianceRegistry | [`0x7ec6309159521d76c6A2839e4048864E3701d7CF`](https://hoodi.etherscan.io/address/0x7ec6309159521d76c6A2839e4048864E3701d7CF) |
+| AIPerformanceOracle | [`0x03C3A6E6B6Cea0CbA63b61B35fb2d0287e062715`](https://hoodi.etherscan.io/address/0x03C3A6E6B6Cea0CbA63b61B35fb2d0287e062715) |
+| StakingVault | [`0xFE328A93e386524E3f8797d1c5EEB1D411bf35d9`](https://hoodi.etherscan.io/address/0xFE328A93e386524E3f8797d1c5EEB1D411bf35d9) |
+| AIModelMarketplace | [`0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464`](https://hoodi.etherscan.io/address/0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464) |
+| SealedBidLicenceAuction | [`0xb6629599d3854F9E990C7FBbbCE65f2D1bEb2b2d`](https://hoodi.etherscan.io/address/0xb6629599d3854F9E990C7FBbbCE65f2D1bEb2b2d) |
+| MockCrossChainRouter | [`0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7`](https://hoodi.etherscan.io/address/0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7) |
+| CrossChainRegistry | [`0x54735bf9222f0AA40e0a105C854f9207AE3D4E91`](https://hoodi.etherscan.io/address/0x54735bf9222f0AA40e0a105C854f9207AE3D4E91) |
+
+Deployed 2026-08-18T00:44:49.643Z.
+
+## Cross-chain run: Ethereum Sepolia to Ethereum Hoodi
+
+public-testnet model-listing transfer with operator-relayed demonstration adapter
+
+| Step | Network | Transaction |
+|---|---|---|
+| trust destination registry | Ethereum Sepolia | [`0x530f3d1bac294eb2...`](https://sepolia.etherscan.io/tx/0x530f3d1bac294eb2cfc435ed4fdcc643d2c1a1ffd21a13ccbbadffe4d45d5486) |
+| trust source registry | Ethereum Hoodi | [`0x2479ab8d2b3e0965...`](https://hoodi.etherscan.io/tx/0x2479ab8d2b3e096546fca079224acf449057e6f701e4b27fd47e8ecaf83c53e1) |
+| record destination router | Ethereum Sepolia | [`0xdfe9fc939da512ab...`](https://sepolia.etherscan.io/tx/0xdfe9fc939da512ab88a7acea8ca6272b7905ff58d217cbfe459700faccc1a566) |
+| record source router | Ethereum Hoodi | [`0x79e6c1af35fa3c49...`](https://hoodi.etherscan.io/tx/0x79e6c1af35fa3c49a8d38327cc9eb673459fe17b75db074e2bbbfb9b450361d0) |
+| mint demo provider bond | Ethereum Sepolia | [`0x512455a5a5316471...`](https://sepolia.etherscan.io/tx/0x512455a5a5316471cdd626973641d0c82a922d574b1d233597a1b9f364d02aee) |
+| approve staking vault | Ethereum Sepolia | [`0xced58bfa9a6ec2a9...`](https://sepolia.etherscan.io/tx/0xced58bfa9a6ec2a9d14af408162026f8b13e0c6eaba8ff55dd9d45a07e15397a) |
+| stake provider bond | Ethereum Sepolia | [`0x562669194ee4dcfe...`](https://sepolia.etherscan.io/tx/0x562669194ee4dcfe1018dab98cdb24024d35ef0cc40891aa2f6cf041c92a5a55) |
+| set demo oracle quorum | Ethereum Sepolia | [`0xd48e976c3409c893...`](https://sepolia.etherscan.io/tx/0xd48e976c3409c893e23fdd643da9ea0d8e713e40c01a11d5a583680649f7c81b) |
+| authorize demo reporter | Ethereum Sepolia | [`0x75446fd24e0535c0...`](https://sepolia.etherscan.io/tx/0x75446fd24e0535c0e027d3dd5f273d1e4e28655d8d92f7ec1f057c29745d819a) |
+| register source model | Ethereum Sepolia | [`0xee12b3f1062033bb...`](https://sepolia.etherscan.io/tx/0xee12b3f1062033bbd5c3aa2b60f1115db16b6eefa143383d6f77993756648ae6) |
+| publish oracle result | Ethereum Sepolia | [`0x7775c27cbb9e2e6d...`](https://sepolia.etherscan.io/tx/0x7775c27cbb9e2e6db093322d374db7542db34b9129c40e94aee2ed5d05734a55) |
+| publish cross-chain model | Ethereum Sepolia | [`0x08b8c5a94159c156...`](https://sepolia.etherscan.io/tx/0x08b8c5a94159c15669fe7cb5c7a1b5e0699f6abcfe03dc60b224c04a26972e07) |
+| relay model on destination | Ethereum Hoodi | [`0x49a9355e8f3453b6...`](https://hoodi.etherscan.io/tx/0x49a9355e8f3453b69b3285897d662130cdbd830e5ab3a7b8a3ee7d15d7896fb1) |
+| acknowledge source message | Ethereum Sepolia | [`0x21094709d9c63341...`](https://sepolia.etherscan.io/tx/0x21094709d9c6334165e964928145770913d0209be82fc5680c6fcdf077999389) |
+
+Destination state after the run: model active true, origin chain 11155111.
+
+The adapter is operator-relayed for the demonstration. It is not production CCIP or LayerZero transport.
+
+## Governance handoff
+
+Executed on the Sepolia hub. All 19 privileged roles were granted to the
+Timelock and renounced by the deployer, and `PROPOSER_ROLE` on the Timelock is
+held by `NexusGovernor`. The verification table in
+The governance handoff script reported PASS on every row, and the end state
+was confirmed independently against the chain: the deploying key holds admin on
+none of the contracts that have roles.
+
+## Repository
+
+https://github.com/juliancalvoh-lab/nexusai
+

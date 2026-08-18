@@ -1,0 +1,39 @@
+{
+  "name": "nexusai-platform",
+  "version": "1.0.0",
+  "description": "Multi-chain AI model marketplace, AAI6850 capstone",
+  "author": "Julian Calvo",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "coverage": "hardhat coverage",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "lint:fix": "solhint 'contracts/**/*.sol' --fix",
+    "audit:slither": "slither . --config-file slither.config.json",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.js --network hardhat",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "deploy:base": "hardhat run scripts/deploy.js --network baseSepolia",
+    "deploy:arbitrum": "hardhat run scripts/deploy.js --network arbitrumSepolia",
+    "deploy:amoy": "hardhat run scripts/deploy.js --network amoy",
+    "demo:crosschain": "hardhat run scripts/crosschain-demo.js --network hardhat",
+    "oracle:report": "hardhat run scripts/report-oracle.js --network hardhat",
+    "govern:handoff": "hardhat run scripts/governance-handoff.js",
+    "ml:all": "cd ml && python3 data/build_dataset.py && python3 src/train.py && python3 src/evaluate.py",
+    "verify:all": "npm run lint && npm run build && npm run test && npm run coverage",
+    "preflight": "hardhat run scripts/preflight.js",
+    "record": "node scripts/record-deployment.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "dotenv": "^17.0.0",
+    "hardhat": "^2.22.0",
+    "solc": "0.8.24",
+    "solhint": "^5.0.3",
+    "solidity-coverage": "^0.8.12"
+  }
+}

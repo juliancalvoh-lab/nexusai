@@ -1,0 +1,14 @@
+# pinned to what this was built against, Python 3.11
+#
+#   python -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+#
+# scikit-learn only, no deep learning packages. HistGradientBoosting is
+# sklearn's own.
+
+numpy==2.4.4
+scipy==1.17.1
+pandas==3.0.2
+scikit-learn==1.8.0
+matplotlib==3.10.9
+joblib==1.5.3

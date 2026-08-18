@@ -1,0 +1,7 @@
+{
+  "detectors_to_exclude": "naming-convention,solc-version,similar-names",
+  "filter_paths": "node_modules|contracts/mocks",
+  "exclude_informational": false,
+  "exclude_low": false,
+  "legacy_ast": false
+}

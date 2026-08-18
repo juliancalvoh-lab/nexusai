@@ -1,0 +1,253 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  # solc CDN isn't reachable everywhere, so we pin solc via npm. see hardhat.config.js.
+  # set true on runners with open egress for the faster native binary.
+  USE_NATIVE_SOLC: "false"
+  FOUNDRY_PROFILE: ci
+
+jobs:
+  lint:
+    name: Lint (Solhint + Prettier)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Solhint
+        run: npx solhint 'contracts/**/*.sol'
+      - name: Fail on any Solhint error
+        run: npx solhint 'contracts/**/*.sol' --max-warnings 20
+
+  build:
+    name: Compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx hardhat compile
+      - name: Contract size check (EIP-170)
+        run: |
+          node -e "
+          const fs=require('fs'),path=require('path');
+          const root='artifacts/contracts';
+          let worst=0, worstName='';
+          const walk=d=>fs.readdirSync(d,{withFileTypes:true}).forEach(e=>{
+            const p=path.join(d,e.name);
+            if(e.isDirectory()) return walk(p);
+            if(!e.name.endsWith('.json')||e.name.endsWith('.dbg.json')) return;
+            const a=JSON.parse(fs.readFileSync(p,'utf8'));
+            if(!a.deployedBytecode||a.deployedBytecode==='0x') return;
+            const size=(a.deployedBytecode.length-2)/2;
+            if(size>worst){worst=size;worstName=a.contractName;}
+            if(size>24576){console.error('OVER LIMIT: '+a.contractName+' '+size);process.exit(1);}
+          });
+          walk(root);
+          console.log('largest contract: '+worstName+' '+worst+' bytes (limit 24576)');
+          "
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: artifacts/
+          retention-days: 7
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Test
+        run: npx hardhat test
+      - name: Gas report
+        run: REPORT_GAS=true npx hardhat test
+        continue-on-error: true
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx hardhat coverage
+      - name: Coverage gate
+        run: |
+          node -e "
+          const c=require('./coverage.json');
+          const tot={s:[0,0],b:[0,0],f:[0,0],l:[0,0]};
+          for(const k of Object.keys(c)){
+            const f=c[k];
+            const add=(key,map)=>{const v=Object.values(map||{});tot[key][1]+=v.length;tot[key][0]+=v.filter(x=>Array.isArray(x)?x.every(y=>y>0):x>0).length;};
+            add('s',f.s); add('f',f.f);
+            const bv=Object.values(f.b||{}).flat(); tot.b[1]+=bv.length; tot.b[0]+=bv.filter(x=>x>0).length;
+          }
+          const pct=([a,b])=>b?100*a/b:100;
+          const rows=[['statements',pct(tot.s)],['branches',pct(tot.b)],['functions',pct(tot.f)]];
+          let fail=false;
+          for(const [n,p] of rows){ console.log(n.padEnd(12)+p.toFixed(2)+'%'); if(p<90){fail=true;console.error('BELOW 90% GATE: '+n);} }
+          process.exit(fail?1:0);
+          "
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
+
+  security:
+    name: Static analysis (Slither)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm ci
+      - run: pip install slither-analyzer
+      - name: Slither
+        run: |
+          slither . --config-file slither.config.json --checklist --markdown-root "" > slither-report.md || true
+          cat slither-report.md
+      - name: Fail on unaccepted high-impact findings
+        run: |
+          python3 - <<'PY'
+          import re, sys
+          text = open('slither-report.md').read()
+          # accepted in the audit report
+          ALLOWED = {'arbitrary-send-eth'}
+          blocking = []
+          for name, impact, body in re.findall(r'## ([a-z-]+)\nImpact: (\w+)\nConfidence: \w+\n(.*?)(?=\n## |\Z)', text, re.S):
+              if impact in ('High', 'Critical') and name not in ALLOWED:
+                  blocking.append((name, body.count('- [ ] ID-')))
+          if blocking:
+              print('BLOCKING high-impact Slither findings:')
+              for n, c in blocking:
+                  print(f'  {n}: {c}')
+              sys.exit(1)
+          print('No unaccepted high-impact findings.')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slither-report
+          path: slither-report.md
+          retention-days: 30
+
+  ml:
+    name: ML pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r ml/requirements.txt
+      - name: Build dataset, train, evaluate
+        working-directory: ml
+        run: |
+          python3 data/build_dataset.py
+          python3 src/train.py
+          python3 src/evaluate.py
+      - name: Gate on model quality
+        working-directory: ml
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          r = json.load(open('reports/oracle_report.json'))
+          print(f"accuracyBps={r['accuracyBps']} latencyMs={r['latencyMs']} driftBps={r['driftBps']}")
+          if r['accuracyBps'] < 9000:
+              print('FAIL: model below the 90% marketplace quality floor')
+              sys.exit(1)
+          if r['driftBps'] > 3000:
+              print('FAIL: drift above tolerance')
+              sys.exit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ml-reports
+          path: ml/reports/
+          retention-days: 30
+
+  e2e:
+    name: End-to-end demo
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Cross-chain demo
+        run: npx hardhat run scripts/crosschain-demo.js
+
+  # manual only. needs the testnet environment, which has required reviewers.
+  deploy-testnet:
+    name: Deploy to testnet (manual)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    needs: [lint, test, coverage, security, e2e]
+    environment: testnet
+    strategy:
+      max-parallel: 1
+      matrix:
+        network: [sepolia, baseSepolia, arbitrumSepolia, amoy]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Deploy
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+          BASE_SEPOLIA_RPC_URL: ${{ secrets.BASE_SEPOLIA_RPC_URL }}
+          ARBITRUM_SEPOLIA_RPC_URL: ${{ secrets.ARBITRUM_SEPOLIA_RPC_URL }}
+          AMOY_RPC_URL: ${{ secrets.AMOY_RPC_URL }}
+          CROSSCHAIN_ROUTER: ${{ secrets.CROSSCHAIN_ROUTER }}
+        run: npx hardhat run scripts/deploy.js --network ${{ matrix.network }}
+      - name: Verify on explorer
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        run: npx hardhat run scripts/verify.js --network ${{ matrix.network }}
+        continue-on-error: true
+      - name: Governance hand-off (dry run, execute manually after review)
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          DRY_RUN: "true"
+        run: npx hardhat run scripts/governance-handoff.js --network ${{ matrix.network }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deployment-${{ matrix.network }}
+          path: deployments/${{ matrix.network }}.json

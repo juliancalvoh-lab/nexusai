@@ -1,0 +1,17 @@
+node_modules/
+artifacts/
+cache/
+coverage/
+coverage.json
+typechain-types/
+.env
+.env.local
+deployments/localhost.json
+deployments/hardhat.json
+ml/artifacts/
+ml/data/*.jsonl
+__pycache__/
+*.pyc
+.DS_Store
+_old/
+PUSH.command

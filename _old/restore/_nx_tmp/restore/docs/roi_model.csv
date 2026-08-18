@@ -1,0 +1,134 @@
+SECTION,ITEM,UNIT,YEAR_1,YEAR_2,YEAR_3,YEAR_4,YEAR_5,SOURCE / BASIS
+ASSUMPTIONS,Protocol fee (protocolFeeBps),%,5.0,5.0,5.0,5.0,5.0,Contract default: AIModelMarketplace.protocolFeeBps=500; ceiling MAX_PROTOCOL_FEE_BPS=1000
+ASSUMPTIONS,Burn share of fee (burnShareBps),%,30.0,30.0,30.0,30.0,30.0,Contract default: AIModelMarketplace.burnShareBps=3000
+ASSUMPTIONS,Treasury share of fee,%,70.0,70.0,70.0,70.0,70.0,Derived: fee - burn (AIModelMarketplace._settlePayment)
+ASSUMPTIONS,Auction protocol fee,%,0.0,0.0,0.0,0.0,0.0,GAP: SealedBidLicenceAuction.settle() pays seller in full; no protocol fee in code. Modelled at zero.
+ASSUMPTIONS,No-reveal penalty accrues to,-,seller,seller,seller,seller,seller,"SealedBidLicenceAuction.withdrawCollateral() transfers penalty to a.seller, not treasury"
+ASSUMPTIONS,Discount rate (NPV),%,30.0,30.0,30.0,30.0,30.0,"ESTIMATE, NOT SOURCED: seed-stage venture hurdle convention; NPV also run at 20% and 40%"
+ASSUMPTIONS,Terminal growth rate,%,5.0,5.0,5.0,5.0,5.0,"ESTIMATE, NOT SOURCED: long-run nominal growth convention"
+ASSUMPTIONS,Year-0 pre-mainnet outlay,USD,-600000.0,,,,,ESTIMATE: audit round 1 + testnet ops + legal/regulatory opinion
+ASSUMPTIONS,NEXA reference price,USD/NEXA,0.05,0.05,0.05,0.05,0.05,"MODELLING CONVENTION ONLY, NOT A PRICE FORECAST. USD lines are invariant to this."
+ASSUMPTIONS,Assumed annual emission,NEXA,24000000,24000000,24000000,24000000,24000000,ESTIMATE: 2.0M/epoch x 12; ceiling is NexusAIToken.MAX_EPOCH_EMISSION=12.5M/30d
+ASSUMPTIONS,Genesis supply to treasury,NEXA,400000000,,,,,NexusAIToken deployment doc: 400M of 1B MAX_SUPPLY
+ASSUMPTIONS,Escrow dispute window,days,7,7,7,7,7,AIModelMarketplace.disputeWindow = 7 days
+ASSUMPTIONS,Staking lock multipliers,x,1.00 / 1.25 / 1.60 / 2.20,,,,,StakingVault constructor tiers: 0d/90d/180d/365d
+ASSUMPTIONS,Max slash per event,%,30.0,,,,,StakingVault.MAX_SLASH_BPS = 3000
+ASSUMPTIONS,Governance quorum,%,4.0,,,,,NexusGovernor deployment parameter (quorumPercent)
+ASSUMPTIONS (Base),Average active listings,count,24,96,240,480,800,"ESTIMATE, NOT SOURCED: modelled provider ramp; primary sensitivity driver"
+ASSUMPTIONS (Base),Licences sold per listing per year,count,6,9,12,14,16,"ESTIMATE, NOT SOURCED: modelled demand density; primary sensitivity driver"
+ASSUMPTIONS (Base),Average licence price (ASP),USD,12500,12500,12500,12500,12500,"ESTIMATE, NOT SOURCED: benchmarked loosely to enterprise security-model subscriptions"
+ASSUMPTIONS (Base),Opex multiplier vs base,x,1.0,1.0,1.0,1.0,1.0,ESTIMATE: team size scales with adoption
+ASSUMPTIONS (Bear),Average active listings,count,12,40,90,150,220,"ESTIMATE, NOT SOURCED: modelled provider ramp; primary sensitivity driver"
+ASSUMPTIONS (Bear),Licences sold per listing per year,count,4,5,6,7,8,"ESTIMATE, NOT SOURCED: modelled demand density; primary sensitivity driver"
+ASSUMPTIONS (Bear),Average licence price (ASP),USD,9000,9000,9000,9000,9000,"ESTIMATE, NOT SOURCED: benchmarked loosely to enterprise security-model subscriptions"
+ASSUMPTIONS (Bear),Opex multiplier vs base,x,0.85,0.85,0.85,0.85,0.85,ESTIMATE: team size scales with adoption
+ASSUMPTIONS (Bull),Average active listings,count,40,200,600,1100,1800,"ESTIMATE, NOT SOURCED: modelled provider ramp; primary sensitivity driver"
+ASSUMPTIONS (Bull),Licences sold per listing per year,count,8,14,20,24,28,"ESTIMATE, NOT SOURCED: modelled demand density; primary sensitivity driver"
+ASSUMPTIONS (Bull),Average licence price (ASP),USD,15000,15000,15000,15000,15000,"ESTIMATE, NOT SOURCED: benchmarked loosely to enterprise security-model subscriptions"
+ASSUMPTIONS (Bull),Opex multiplier vs base,x,1.2,1.2,1.2,1.2,1.2,ESTIMATE: team size scales with adoption
+ASSUMPTIONS (opex),Engineering,USD,1200000,1680000,2160000,2400000,2640000,ESTIMATE: 5->11 blended FTE at ~USD 240k fully loaded
+ASSUMPTIONS (opex),Security audits,USD,250000,150000,150000,150000,150000,"ESTIMATE: 2 full audits pre-mainnet, delta audits thereafter"
+ASSUMPTIONS (opex),Oracle / eval infrastructure,USD,120000,180000,240000,300000,360000,"ESTIMATE: N-reporter eval harness, holdout rotation, gas for submitReport"
+ASSUMPTIONS (opex),Compliance & legal,USD,300000,220000,240000,260000,280000,"ESTIMATE: MiCA/GDPR counsel, attester onboarding, sanctions screening feed"
+ASSUMPTIONS (opex),Business development,USD,250000,400000,500000,550000,600000,ESTIMATE: provider recruitment + enterprise pilots
+,,,,,,,,
+OUTPUTS (Base),Active listings,count,24,96,240,480,800,= assumption
+OUTPUTS (Base),Licences sold,count,144,864,2880,6720,12800,= listings x licences per listing
+OUTPUTS (Base),GMV,USD,1800000,10800000,36000000,84000000,160000000,= licences sold x ASP
+OUTPUTS (Base),Protocol revenue (fee),USD,90000,540000,1800000,4200000,8000000,= GMV x 5%
+OUTPUTS (Base),Burn,USD,27000,162000,540000,1260000,2400000,= fee x 30%
+OUTPUTS (Base),Treasury accrual,USD,63000,378000,1260000,2940000,5600000,= fee x 70%
+OUTPUTS (Base),Burn,NEXA,540000,3240000,10800000,25200000,48000000,= burn USD / NEXA reference price
+OUTPUTS (Base),Net token flow (burn - emission),NEXA,-23460000,-20760000,-13200000,1200000,24000000,negative = net inflationary
+OUTPUTS (Base),Total opex,USD,2120000,2630000,3290000,3660000,4030000,= sum of opex lines x multiplier
+OUTPUTS (Base),Net cash flow,USD,-2030000,-2090000,-1490000,540000,3970000,= protocol revenue - opex
+OUTPUTS (Base),Cumulative cash flow,USD,-2630000,-4720000,-6210000,-5670000,-1700000,includes year-0 outlay
+OUTPUTS (Base),Break-even GMV,USD,42400000,52600000,65800000,73200000,80600000,= opex / 5% take rate
+,,,,,,,,
+OUTPUTS (Bear),Active listings,count,12,40,90,150,220,= assumption
+OUTPUTS (Bear),Licences sold,count,48,200,540,1050,1760,= listings x licences per listing
+OUTPUTS (Bear),GMV,USD,432000,1800000,4860000,9450000,15840000,= licences sold x ASP
+OUTPUTS (Bear),Protocol revenue (fee),USD,21600,90000,243000,472500,792000,= GMV x 5%
+OUTPUTS (Bear),Burn,USD,6480,27000,72900,141750,237600,= fee x 30%
+OUTPUTS (Bear),Treasury accrual,USD,15120,63000,170100,330750,554400,= fee x 70%
+OUTPUTS (Bear),Burn,NEXA,129600,540000,1458000,2835000,4752000,= burn USD / NEXA reference price
+OUTPUTS (Bear),Net token flow (burn - emission),NEXA,-23870400,-23460000,-22542000,-21165000,-19248000,negative = net inflationary
+OUTPUTS (Bear),Total opex,USD,1802000,2235500,2796500,3111000,3425500,= sum of opex lines x multiplier
+OUTPUTS (Bear),Net cash flow,USD,-1780400,-2145500,-2553500,-2638500,-2633500,= protocol revenue - opex
+OUTPUTS (Bear),Cumulative cash flow,USD,-2380400,-4525900,-7079400,-9717900,-12351400,includes year-0 outlay
+OUTPUTS (Bear),Break-even GMV,USD,36040000,44710000,55930000,62220000,68510000,= opex / 5% take rate
+,,,,,,,,
+OUTPUTS (Bull),Active listings,count,40,200,600,1100,1800,= assumption
+OUTPUTS (Bull),Licences sold,count,320,2800,12000,26400,50400,= listings x licences per listing
+OUTPUTS (Bull),GMV,USD,4800000,42000000,180000000,396000000,756000000,= licences sold x ASP
+OUTPUTS (Bull),Protocol revenue (fee),USD,240000,2100000,9000000,19800000,37800000,= GMV x 5%
+OUTPUTS (Bull),Burn,USD,72000,630000,2700000,5940000,11340000,= fee x 30%
+OUTPUTS (Bull),Treasury accrual,USD,168000,1470000,6300000,13860000,26460000,= fee x 70%
+OUTPUTS (Bull),Burn,NEXA,1440000,12600000,54000000,118800000,226800000,= burn USD / NEXA reference price
+OUTPUTS (Bull),Net token flow (burn - emission),NEXA,-22560000,-11400000,30000000,94800000,202800000,negative = net inflationary
+OUTPUTS (Bull),Total opex,USD,2544000,3156000,3948000,4392000,4836000,= sum of opex lines x multiplier
+OUTPUTS (Bull),Net cash flow,USD,-2304000,-1056000,5052000,15408000,32964000,= protocol revenue - opex
+OUTPUTS (Bull),Cumulative cash flow,USD,-2904000,-3960000,1092000,16500000,49464000,includes year-0 outlay
+OUTPUTS (Bull),Break-even GMV,USD,50880000,63120000,78960000,87840000,96720000,= opex / 5% take rate
+,,,,,,,,
+VALUATION,Item,Unit,Bear,Base,Bull,,,Basis
+VALUATION,NPV @ 30%,USD,-6034422,1672676,50863559,,,5 explicit years + Gordon terminal on Y5 net (g=5%); TV=0 if Y5 net<=0
+VALUATION,NPV @ 20%,USD,-7382086,3951453,75987793,,,same cash flows
+VALUATION,NPV @ 40%,USD,-5073414,319667,34938989,,,same cash flows
+VALUATION,IRR,%,n/a,43.3,176.1,,,n/a = no sign change in cash flows within horizon
+VALUATION,Terminal value (undiscounted),USD,0,16674000,138448800,,,Y5 net x (1+g)/(r-g)
+VALUATION,Payback year (cumulative >= 0),year,beyond Y5,beyond Y5,3,,,"operating cash only, excludes terminal value"
+VALUATION,Y3 break-even GMV,USD,55930000,65800000,78960000,,,= Y3 opex / 5%
+VALUATION,Y3 GMV vs break-even,x,0.09,0.55,2.28,,,<1.0 = loss-making
+,,,,,,,,
+SENSITIVITY,Driver,Setting,Y3 GMV (USD),Y3 protocol revenue (USD),Y3 net (USD),,,"Base scenario, one driver flexed at a time"
+SENSITIVITY,Take rate,3%,36000000,1080000,-2210000,,,10% is the contract hard ceiling (MAX_PROTOCOL_FEE_BPS)
+SENSITIVITY,Take rate,5%,36000000,1800000,-1490000,,,10% is the contract hard ceiling (MAX_PROTOCOL_FEE_BPS)
+SENSITIVITY,Take rate,7.5%,36000000,2700000,-590000,,,10% is the contract hard ceiling (MAX_PROTOCOL_FEE_BPS)
+SENSITIVITY,Take rate,10%,36000000,3600000,310000,,,10% is the contract hard ceiling (MAX_PROTOCOL_FEE_BPS)
+SENSITIVITY,Licences per listing (Y3),6,18000000,900000,-2390000,,,demand density
+SENSITIVITY,Licences per listing (Y3),9,27000000,1350000,-1940000,,,demand density
+SENSITIVITY,Licences per listing (Y3),12,36000000,1800000,-1490000,,,demand density
+SENSITIVITY,Licences per listing (Y3),18,54000000,2700000,-590000,,,demand density
+SENSITIVITY,Licences per listing (Y3),24,72000000,3600000,310000,,,demand density
+SENSITIVITY,Active listings (Y3),90,13500000,675000,-2615000,,,provider growth
+SENSITIVITY,Active listings (Y3),240,36000000,1800000,-1490000,,,provider growth
+SENSITIVITY,Active listings (Y3),480,72000000,3600000,310000,,,provider growth
+SENSITIVITY,Active listings (Y3),800,120000000,6000000,2710000,,,provider growth
+SENSITIVITY,Active listings (Y3),1200,180000000,9000000,5710000,,,provider growth
+,,,,,,,,
+BUYER ROI,Item,Unit,Value,,,,,Source / basis
+BUYER ROI,Reference enterprise size,employees,10000,,,,,ESTIMATE: modelled large enterprise
+BUYER ROI,"Avg cost, phishing as initial attack vector",USD,4800000,,,,,"IBM Cost of a Data Breach Report 2025 (phishing = 16% of breaches, USD 4.8M avg)"
+BUYER ROI,Annual probability of material phishing-initiated breach,%,12.0,,,,,"ESTIMATE, NOT SOURCED. Range modelled 8%-20%."
+BUYER ROI,Expected annual breach loss,USD,576000.0,,,,,= probability x average cost
+BUYER ROI,Avg reported loss per BEC incident,USD,123000,,,,,"FBI IC3 2025 Annual Report: USD 3,046,598,558 over 24,768 BEC complaints"
+BUYER ROI,Expected BEC incidents reaching finance per year,count,0.35,,,,,"ESTIMATE, NOT SOURCED"
+BUYER ROI,Expected annual BEC loss,USD,43050.0,,,,,= incidence x avg loss
+BUYER ROI,Total expected annual phishing-attributable loss,USD,619050.0,,,,,sum of the two lines above
+BUYER ROI,Incremental detection lift over incumbent gateway,%,25.0,,,,,"ESTIMATE, NOT SOURCED. Range modelled 10%-40%."
+BUYER ROI,Expected loss avoided per year,USD,154762.5,,,,,= expected loss x lift
+BUYER ROI,Licence fee (annual term),USD,12500,,,,,"= modelled ASP, consistent with GMV assumptions"
+BUYER ROI,Integration cost (one-off),USD,35000,,,,,"ESTIMATE, NOT SOURCED"
+BUYER ROI,Integration amortised over 3 years,USD,11666.666666666666,,,,,
+BUYER ROI,Internal inference / monitoring ops,USD,18000,,,,,"ESTIMATE, NOT SOURCED"
+BUYER ROI,Year-1 total cost of ownership,USD,65500,,,,,licence + full integration + ops
+BUYER ROI,Steady-state annual cost,USD,30500,,,,,licence + ops
+BUYER ROI,Year-1 net benefit,USD,89262.5,,,,,= loss avoided - year-1 TCO
+BUYER ROI,Year-1 ROI,%,136.3,,,,,= net benefit / year-1 TCO
+BUYER ROI,Steady-state ROI,%,407.4,,,,,= (loss avoided - steady cost) / steady cost
+BUYER ROI,Break-even detection lift (year 1),%,10.6,,,,,lift at which net benefit = 0 in year 1
+BUYER ROI,Break-even detection lift (steady state),%,4.9,,,,,lift at which net benefit = 0 in steady state
+BUYER ROI,Loss avoided @ 10% lift,USD,61905.0,,,,,bear sensitivity
+BUYER ROI,Loss avoided @ 40% lift,USD,247620.0,,,,,bull sensitivity
+BUYER ROI,Buyer recoverable amount in dispute (95% of price),USD,11875,,,,,AIModelMarketplace: escrow holds price minus fee; the 5% protocol fee (USD 625) is NOT refunded on dispute
+,,,,,,,,
+TOKEN FLOW,Item,Unit,Value,,,,,Basis
+TOKEN FLOW,GMV required for net-deflationary supply,USD,80000000,,,,,= (annual emission x NEXA price) / (5% x 30%)
+TOKEN FLOW,Base Y3 GMV as share of that threshold,%,45.0,,,,,<100% = net inflationary at base case
+TOKEN FLOW,Max annual emission at contract ceiling,NEXA,150000000,,,,,NexusAIToken.MAX_EPOCH_EMISSION x 12 epochs
+VALUATION,NPV @ 30% EXCLUDING terminal value,USD,-6034422,-2818117,13575272,,,"operating cash only, 5 years"
+VALUATION,Discounted terminal value @ 30%,USD,0,4490793,37288287,,,TV / (1.30^5)
+VALUATION,Terminal value share of NPV,%,n/a,268.5,73.3,,,>100% means operating cash alone is NPV-negative
+VALUATION,Cumulative operating cash at end of Y5,USD,-12351400,-1700000,49464000,,,includes year-0 outlay; negative = capital not yet returned
+VALUATION,Peak cumulative cash deficit (max funding need),USD,-12351400,-6210000,-3960000,,,largest drawdown across the 5-year path

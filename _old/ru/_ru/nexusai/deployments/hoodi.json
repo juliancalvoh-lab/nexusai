@@ -1,0 +1,71 @@
+{
+  "network": "hoodi",
+  "chainSelector": "560048",
+  "role": "spoke",
+  "contracts": {
+    "NexusTimelock": "0xE2960dF7a0C5ca17952B2ddAEc30f9c7AB489dF7",
+    "NexusAIToken": "0xD68dB442306F48214bF79AdBc5803E73C825af41",
+    "ComplianceRegistry": "0x7ec6309159521d76c6A2839e4048864E3701d7CF",
+    "AIPerformanceOracle": "0x03C3A6E6B6Cea0CbA63b61B35fb2d0287e062715",
+    "StakingVault": "0xFE328A93e386524E3f8797d1c5EEB1D411bf35d9",
+    "AIModelMarketplace": "0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464",
+    "SealedBidLicenceAuction": "0xb6629599d3854F9E990C7FBbbCE65f2D1bEb2b2d",
+    "MockCrossChainRouter": "0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7",
+    "CrossChainRegistry": "0x54735bf9222f0AA40e0a105C854f9207AE3D4E91"
+  },
+  "constructorArgs": {
+    "NexusTimelock": [
+      172800,
+      [],
+      [],
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ],
+    "NexusAIToken": [
+      "0xE2960dF7a0C5ca17952B2ddAEc30f9c7AB489dF7",
+      "0",
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ],
+    "ComplianceRegistry": [
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ],
+    "AIPerformanceOracle": [
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA",
+      3,
+      86400,
+      1500
+    ],
+    "StakingVault": [
+      "0xD68dB442306F48214bF79AdBc5803E73C825af41",
+      "0xE2960dF7a0C5ca17952B2ddAEc30f9c7AB489dF7",
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ],
+    "AIModelMarketplace": [
+      "0xD68dB442306F48214bF79AdBc5803E73C825af41",
+      "0x03C3A6E6B6Cea0CbA63b61B35fb2d0287e062715",
+      "0x7ec6309159521d76c6A2839e4048864E3701d7CF",
+      "0xFE328A93e386524E3f8797d1c5EEB1D411bf35d9",
+      "0xE2960dF7a0C5ca17952B2ddAEc30f9c7AB489dF7",
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ],
+    "SealedBidLicenceAuction": [
+      "0xD68dB442306F48214bF79AdBc5803E73C825af41",
+      "0x7ec6309159521d76c6A2839e4048864E3701d7CF",
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ],
+    "MockCrossChainRouter": [
+      "560048",
+      "100000000000000",
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ],
+    "CrossChainRegistry": [
+      "0x2BF6715bbbA82C10aFA33C350E0544105F35a0d7",
+      "0x13ce90c2E96c40F524F2dBbE311eCCBE973AB464",
+      "560048",
+      "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+    ]
+  },
+  "transport": "operator-relayed testnet demonstration; not a production bridge",
+  "deployedAt": "2026-08-18T00:44:49.643Z",
+  "blockNumber": 3440772,
+  "deployer": "0x64892B4a1ab85b55DC30500CA41E1B726db193FA"
+}
